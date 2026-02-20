@@ -165,5 +165,46 @@ def test_washers(washer_class: Nut, washer_type: str, washer_size: str):
     assert hole_tests.part.volume < 100 * 100 * 20
 
 
+@pytest.mark.parametrize(
+    "screw_class, screw_type, screw_size, b_joint_offset",
+    [
+        (screw_class, screw_type, screw_size, b_joint_offset)
+        for screw_size in ["M5-0.8", "1/4-20"]
+        for screw_class, screw_types in Screw.select_by_size(screw_size).items()
+        for screw_type in screw_types
+        for b_joint_offset in [0, 2]
+    ],
+)
+def test_screws_and_nuts(screw_class: Screw, screw_type: str, screw_size: str, b_joint_offset: float):
+    SIMPLE=random.choice([True, False])
+    SCREW_LENGTH = 20
+    screw: Screw = screw_class(
+        size=screw_size,
+        length=SCREW_LENGTH,
+        fastener_type=screw_type,
+        simple=SIMPLE,
+        b_joint_offset=b_joint_offset
+    )
+
+    nuts_info = [
+        (nut_class, nut_type, nut_size)
+        for nut_size in ["M5-0.8"] #, "M5-0.8-Standard", "1/4-20"]
+        for nut_class, nut_types in Nut.select_by_size(nut_size).items()
+        for nut_type in nut_types
+    ]
+    (nut_class, nut_type, nut_size) = nuts_info[random.randint(0, nuts_info.__len__() - 1)]
+
+    nut: Nut = nut_class(size=nut_size, fastener_type=nut_type, simple=SIMPLE)
+    nut.label = f"{nut_class}:{nut_size}:{nut_type}"
+    screw.joints["b"].connect_to(nut.joints["b"])
+    assembly = Compound(children=[screw, nut])
+
+    assert nut.orientation.Z == -180, "Orientation"
+    assert abs(nut.bounding_box().min.Z - screw.bounding_box().min.Z) < (b_joint_offset + 0.1), f"min.Z for {nut.label=}"
+    assert abs(screw.bounding_box().size.Z - assembly.bounding_box().size.Z) < 0.1, f"size.Z for {nut.label=}"
+    if nut_class != DomedCapNut and SIMPLE:
+        # b-joint of DomedCapNut does not match with lowest position of its nut thread
+        assert not assembly.do_children_intersect()[0], f"Intersection for {nut.label=}"
+
 if __name__ == "__main__":
     test_screws(SocketHeadCapScrew, "iso4762", "M5-0.8")

@@ -1557,6 +1557,7 @@ class Screw(ABC, BasePartObject):
         hand: Optional[Literal["right", "left"]] = "right",
         simple: Optional[bool] = True,
         socket_clearance: Optional[float] = 6 * MM,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -1664,6 +1665,7 @@ class Screw(ABC, BasePartObject):
         )
         self.color = Color(0xC0C0C0)
         RigidJoint("a", self, Location())
+        RigidJoint("b", self, Pos(Z=b_joint_offset) * self.faces().filter_by(Plane.XY).sort_by(Axis.Z)[0].center_location)
 
     def make_head(self) -> Solid:
         """Create a screw head from the 2D shapes defined in the derived class"""
@@ -1804,6 +1806,7 @@ class ButtonHeadScrew(Screw):
             iso7380_1 - Hexagon socket button head screws
             hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment. Defaults to None.
         mode (Mode, optional): combination mode. Defaults to Mode.ADD.
@@ -1818,6 +1821,7 @@ class ButtonHeadScrew(Screw):
         fastener_type: Literal["iso7380_1"] = "iso7380_1",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -1828,6 +1832,7 @@ class ButtonHeadScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -1872,6 +1877,7 @@ class ButtonHeadWithCollarScrew(Screw):
             iso7380_2 - Hexagon socket button head screws with collar
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment.
             Defaults to None.
@@ -1889,6 +1895,7 @@ class ButtonHeadWithCollarScrew(Screw):
         fastener_type: Literal["iso7380_2"] = "iso7380_2",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -1899,6 +1906,7 @@ class ButtonHeadWithCollarScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -1962,6 +1970,7 @@ class CheeseHeadScrew(Screw):
             iso14580 - Hexalobular socket cheese head screws
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment.
             Defaults to None.
@@ -1977,6 +1986,7 @@ class CheeseHeadScrew(Screw):
         fastener_type: Literal["iso1207", "iso7048", "iso14580"] = "iso7048",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -1987,6 +1997,7 @@ class CheeseHeadScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2038,6 +2049,7 @@ class CounterSunkScrew(Screw):
             iso14582 - Hexalobular socket countersunk flat head screws, high head
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment.
             Defaults to None.
@@ -2056,6 +2068,7 @@ class CounterSunkScrew(Screw):
         ] = "iso10642",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2066,6 +2079,7 @@ class CounterSunkScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2121,6 +2135,7 @@ class HexHeadScrew(Screw):
             iso4017 - Hexagon head screws
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment.
             Defaults to None.
@@ -2136,6 +2151,7 @@ class HexHeadScrew(Screw):
         fastener_type: Literal["iso4014", "iso4017"] = "iso4014",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2146,6 +2162,7 @@ class HexHeadScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2217,6 +2234,7 @@ class HexHeadWithFlangeScrew(Screw):
 
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment.
             Defaults to None.
@@ -2234,6 +2252,7 @@ class HexHeadWithFlangeScrew(Screw):
         fastener_type: Literal["din1662", "din1665"] = "din1662",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2244,6 +2263,7 @@ class HexHeadWithFlangeScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2318,6 +2338,7 @@ class PanHeadScrew(Screw):
             asme_b_18.6.3 - Type 1 Cross Recessed Pan Head Machine Screws
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment.
             Defaults to None.
@@ -2333,6 +2354,7 @@ class PanHeadScrew(Screw):
         fastener_type: Literal["iso1580", "iso14583", "asme_b_18.6.3"] = "iso14583",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2343,6 +2365,7 @@ class PanHeadScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2387,6 +2410,7 @@ class PanHeadWithCollarScrew(Screw):
             din967 - Cross recessed pan head screws with collar
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment.
             Defaults to None.
@@ -2404,6 +2428,7 @@ class PanHeadWithCollarScrew(Screw):
         fastener_type: Literal["din967"] = "din967",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2414,6 +2439,7 @@ class PanHeadWithCollarScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2457,6 +2483,7 @@ class RaisedCheeseHeadScrew(Screw):
             iso7045 - Cross recessed raised cheese head screws
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment.
             Defaults to None.
@@ -2474,6 +2501,7 @@ class RaisedCheeseHeadScrew(Screw):
         fastener_type: Literal["iso7045"] = "iso7045",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2484,6 +2512,7 @@ class RaisedCheeseHeadScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2534,6 +2563,7 @@ class RaisedCounterSunkOvalHeadScrew(Screw):
             iso14584 - Hexalobular socket raised countersunk head screws
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment.
             Defaults to None.
@@ -2551,6 +2581,7 @@ class RaisedCounterSunkOvalHeadScrew(Screw):
         fastener_type: Literal["iso2010", "iso7047", "iso14584"] = "iso14584",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2561,6 +2592,7 @@ class RaisedCounterSunkOvalHeadScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2624,6 +2656,7 @@ class SetScrew(Screw):
             iso4026 - Hexagon socket set screws with flat point
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment. Defaults to None.
         mode (Mode, optional): combination mode. Defaults to Mode.ADD.
@@ -2638,6 +2671,7 @@ class SetScrew(Screw):
         fastener_type: Literal["iso4026"] = "iso4026",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2648,6 +2682,7 @@ class SetScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2721,6 +2756,7 @@ class SocketHeadCapScrew(Screw):
             asme_b18.3 - Imperial hexagon socket head cap screws
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment. Defaults to None.
         mode (Mode, optional): combination mode. Defaults to Mode.ADD.
@@ -2735,6 +2771,7 @@ class SocketHeadCapScrew(Screw):
         fastener_type: Literal["iso4762", "asme_b18.3"] = "iso4762",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2745,6 +2782,7 @@ class SocketHeadCapScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
@@ -2787,6 +2825,7 @@ class LowProfileScrew(Screw):
             OpenBuilds - OpenBuilds custom low profile socket head cap screw
         hand (Literal["right","left"], optional): thread direction. Defaults to "right".
         simple (bool, optional): simplify by not creating thread. Defaults to True.
+        b_joint_offset (float, optional): offset of the b-joint towards the screw head. Defaults to 0 * MM.
         rotation (RotationLike, optional): object rotation. Defaults to (0, 0, 0).
         align (Union[None, Align, tuple[Align, Align, Align]], optional): object alignment. Defaults to None.
         mode (Mode, optional): combination mode. Defaults to Mode.ADD.
@@ -2801,6 +2840,7 @@ class LowProfileScrew(Screw):
         fastener_type: Literal["OpenBuilds"] = "OpenBuilds",
         hand: Literal["right", "left"] = "right",
         simple: bool = True,
+        b_joint_offset: float = 0 * MM,
         rotation: RotationLike = (0, 0, 0),
         align: Union[None, Align, tuple[Align, Align, Align]] = None,
         mode: Mode = Mode.ADD,
@@ -2811,6 +2851,7 @@ class LowProfileScrew(Screw):
             fastener_type,
             hand,
             simple,
+            b_joint_offset=b_joint_offset,
             rotation=rotation,
             align=align,
             mode=mode,
